@@ -276,11 +276,18 @@ pres.title = "新人報告";
 {
   const s = newSlide(pres);
   header(s, "一、自我介紹", "自我介紹");
-  const cw = (CW - 0.4) / 2;
-  card(s, { x: M, y: 2.05, w: cw, h: 2.05, title: "學歷", body: "【待補：學校／科系／畢業年】", tint: LAV });
-  card(s, { x: M + cw + 0.4, y: 2.05, w: cw, h: 2.05, title: "到職前經歷", body: "【待補：公司／職稱】", tint: SOFT_BG });
-  card(s, { x: M, y: 4.35, w: cw, h: 2.05, title: "現職", body: "程曦資訊整合股份有限公司\n創新研發部｜產品工程師", tint: SOFT_BG });
-  card(s, { x: M + cw + 0.4, y: 4.35, w: cw, h: 2.05, title: "興趣", body: "【待補：興趣】", tint: CREAM });
+  // 右側人像，3:4 直式；左側 2×2 資料卡
+  const pw = 3.26;
+  const ph = 4.35;
+  const px = M + CW - pw;
+  image(s, "profile", "個人照（直式 3:4）", { x: px, y: 2.05, w: pw, h: ph });
+
+  const cw = (CW - pw - 0.45 - 0.4) / 2;
+  const ch = (ph - 0.3) / 2;
+  card(s, { x: M, y: 2.05, w: cw, h: ch, title: "學歷", body: "【待補：學校／科系／畢業年】", tint: LAV });
+  card(s, { x: M + cw + 0.4, y: 2.05, w: cw, h: ch, title: "到職前經歷", body: "【待補：公司／職稱】", tint: SOFT_BG });
+  card(s, { x: M, y: 2.05 + ch + 0.3, w: cw, h: ch, title: "現職", body: "程曦資訊整合股份有限公司\n創新研發部｜產品工程師", tint: SOFT_BG });
+  card(s, { x: M + cw + 0.4, y: 2.05 + ch + 0.3, w: cw, h: ch, title: "興趣", body: "【待補：興趣】", tint: CREAM });
   stampPage(s);
 }
 
