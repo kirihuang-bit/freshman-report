@@ -109,7 +109,7 @@ function image(slide, base, label, { x, y, w, h }) {
 }
 
 /** 卡片：標題 + 內文 */
-function card(slide, { x, y, w, h, title, body, tint = SOFT_BG, titleColor = NAVY, titleSize = 17 }) {
+function card(slide, { x, y, w, h, title, body, tint = SOFT_BG, titleColor = NAVY, titleSize = 17, bodySize = 13.5 }) {
   slide.addShape("roundRect", {
     x, y, w, h, rectRadius: 0.06,
     fill: { color: tint }, line: { color: "FFFFFF", width: 0 },
@@ -121,7 +121,7 @@ function card(slide, { x, y, w, h, title, body, tint = SOFT_BG, titleColor = NAV
   });
   slide.addText(body, {
     x: x + 0.32, y: y + 0.72, w: w - 0.64, h: h - 0.98,
-    fontFace: FONT, fontSize: 13.5, color: NAVY, margin: 0, valign: "top", lineSpacingMultiple: 1.25,
+    fontFace: FONT, fontSize: bodySize, color: NAVY, margin: 0, valign: "top", lineSpacingMultiple: 1.25,
   });
 }
 
@@ -284,10 +284,26 @@ pres.title = "新人報告";
 
   const cw = (CW - pw - 0.45 - 0.4) / 2;
   const ch = (ph - 0.3) / 2;
-  card(s, { x: M, y: 2.05, w: cw, h: ch, title: "學歷", body: "【待補：學校／科系／畢業年】", tint: LAV });
-  card(s, { x: M + cw + 0.4, y: 2.05, w: cw, h: ch, title: "到職前經歷", body: "【待補：公司／職稱】", tint: SOFT_BG });
-  card(s, { x: M, y: 2.05 + ch + 0.3, w: cw, h: ch, title: "現職", body: "程曦資訊整合股份有限公司\n創新研發部｜產品工程師", tint: SOFT_BG });
-  card(s, { x: M + cw + 0.4, y: 2.05 + ch + 0.3, w: cw, h: ch, title: "興趣", body: "【待補：興趣】", tint: CREAM });
+  card(s, {
+    x: M, y: 2.05, w: cw, h: ch, tint: LAV, bodySize: 12.5,
+    title: "學歷",
+    body: "國立清華大學 科技管理學院學士班\n管理＋經濟雙專長\n2018.09 – 2023.06",
+  });
+  card(s, {
+    x: M + cw + 0.4, y: 2.05, w: cw, h: ch, tint: SOFT_BG, bodySize: 12.5,
+    title: "到職前經歷",
+    body: "台北數位廣告股份有限公司\n產品企劃部｜產品企劃專員\n2024.10 – 2026.03",
+  });
+  card(s, {
+    x: M, y: 2.05 + ch + 0.3, w: cw, h: ch, tint: SOFT_BG, bodySize: 12.5,
+    title: "現職",
+    body: "程曦資訊整合股份有限公司\n創新研發部｜產品工程師\n2026.04 –",
+  });
+  card(s, {
+    x: M + cw + 0.4, y: 2.05 + ch + 0.3, w: cw, h: ch, tint: CREAM, bodySize: 12.5,
+    title: "興趣",
+    body: "音樂（龐克搖滾／重金屬）、攝影、旅行\nTRPG 主持與劇本創作\n工作之外也用 AI 做數據分析與翻譯",
+  });
   stampPage(s);
 }
 
@@ -297,30 +313,39 @@ pres.title = "新人報告";
   header(s, "一、自我介紹", "工作歷程");
 
   // 時間軸底線
-  s.addShape("rect", { x: M + 0.3, y: 3.35, w: CW - 0.6, h: 0.045, fill: { color: LAV } });
+  s.addShape("rect", { x: M + 0.35, y: 3.08, w: CW - 0.7, h: 0.045, fill: { color: LAV } });
 
   const nodes = [
-    { t: "【待補：年月】", n: "【待補：前職公司】", r: "【待補：職稱】", cx: 3.2, color: LAV_MID },
-    { t: "2026.04", n: "程曦資訊整合股份有限公司", r: "創新研發部｜產品工程師", cx: 9.6, color: ACCENT },
+    { t: "2020.05", n: "攸你資訊", r: "共同創辦人／PM", d: "APP 產品從 0 到 1\n領導 5 人團隊" },
+    { t: "2024.05", n: "攸你資訊", r: "PM／AI 提示工程師", d: "用 Custom GPTs\n做內部工具" },
+    { t: "2024.10", n: "台北數位廣告", r: "產品企劃專員", d: "AI 工具調研\n與內部培訓" },
+    { t: "2026.04", n: "程曦資訊", r: "創新研發部 產品工程師", d: "對外課程\n＋ 對內系統", now: true },
   ];
-  nodes.forEach((nd) => {
-    s.addShape("ellipse", { x: nd.cx - 0.16, y: 3.2, w: 0.34, h: 0.34, fill: { color: nd.color } });
+  const colW = CW / nodes.length;
+  nodes.forEach((nd, i) => {
+    const cx = M + colW * i + colW / 2;
+    const color = nd.now ? ACCENT : LAV_MID;
+    s.addShape("ellipse", { x: cx - 0.16, y: 2.94, w: 0.33, h: 0.33, fill: { color } });
     s.addText(nd.t, {
-      x: nd.cx - 2.0, y: 2.45, w: 4.0, h: 0.4,
-      fontFace: FONT, fontSize: 17, bold: true, color: NAVY, align: "center", margin: 0,
+      x: cx - colW / 2, y: 2.32, w: colW, h: 0.42,
+      fontFace: FONT, fontSize: 16, bold: true, color: nd.now ? ACCENT : NAVY, align: "center", valign: "middle", margin: 0,
     });
     s.addText(nd.n, {
-      x: nd.cx - 2.4, y: 3.85, w: 4.8, h: 0.44,
-      fontFace: FONT, fontSize: 15, bold: true, color: NAVY, align: "center", margin: 0,
+      x: cx - colW / 2, y: 3.4, w: colW, h: 0.44,
+      fontFace: FONT, fontSize: 15, bold: true, color: NAVY, align: "center", valign: "middle", margin: 0,
     });
     s.addText(nd.r, {
-      x: nd.cx - 2.4, y: 4.28, w: 4.8, h: 0.4,
-      fontFace: FONT, fontSize: 12.5, color: MUTED, align: "center", margin: 0,
+      x: cx - colW / 2 + 0.1, y: 3.84, w: colW - 0.2, h: 0.42,
+      fontFace: FONT, fontSize: 12, color: "4A4F7A", align: "center", valign: "top", margin: 0,
+    });
+    s.addText(nd.d, {
+      x: cx - colW / 2 + 0.1, y: 4.32, w: colW - 0.2, h: 0.8,
+      fontFace: FONT, fontSize: 11.5, color: MUTED, align: "center", valign: "top", margin: 0, lineSpacingMultiple: 1.25,
     });
   });
 
-  s.addText("轉職動機：從【待補：前職領域】轉進 AI／教育訓練領域", {
-    x: M, y: 5.45, w: CW, h: 0.68,
+  s.addText("轉職動機：成為連結業務需求與工程開發的 AI 實踐者，為下一個十年的「辦公室 AI 化」做準備。", {
+    x: M, y: 5.4, w: CW, h: 0.78,
     shape: "roundRect", rectRadius: 0.08, fill: { color: CREAM },
     fontFace: FONT, fontSize: 15, bold: true, color: NAVY, align: "center", valign: "middle", margin: 0,
   });
@@ -1285,24 +1310,50 @@ const NOTES = [
 第四段是重點，會花最多時間講工作成果，分成對外跟對內兩條線；
 最後是心得、職涯規劃，還有幾個給公司的建議。`,
   // P3 自我介紹
-  `先簡單介紹我自己。我是【待補：學校科系】畢業，
-進程曦之前有一段工作經驗，在【待補：前職】。
-我不是一畢業就做 AI 的，是工作一段時間之後才轉進 AI 跟教育訓練這個領域。
-這個轉職經驗對我現在的工作滿有幫助的，
+  `先簡單介紹我自己。
+我是清華大學科技管理學院學士班畢業，主修管理跟經濟雙專長。
+進程曦之前在台北數位廣告的產品企劃部擔任產品企劃專員。
+我不是一畢業就做 AI 的，是工作幾年之後才轉進 AI 跟教育訓練這個領域。
+這個轉職經驗對我現在的工作很有幫助，
 因為我很知道一個沒有技術背景的上班族，第一次接觸 AI 工具的時候會卡在哪裡——
-這剛好就是我現在在做的事：把 AI 工具教給不懂技術的人。`,
+這剛好就是我現在在做的事：把 AI 工具教給不懂技術的人。
+興趣的部分，我喜歡音樂、攝影、旅行，也會主持 TRPG 跟寫遊戲劇本。
+最後一行想特別提一下：我在工作以外參與一個粉絲團體的營運，
+在那裡我一樣是用 AI 在解決問題——用 AI 輔助數據分析寫市場洞察報告，
+也建了客製化的術語庫來做字幕翻譯校對。
+我講這個是想說明，用 AI 解決問題對我來說不是工作要求，是習慣。`,
   // P4 工作歷程
-  `這是我的工作歷程。
-【待補：這裡補一句前職在做什麼】。
-今年四月十號到職程曦，進創新研發部擔任產品工程師，到今天大概四個多月。`,
+  `這是我的工作歷程，四個節點。
+2020 年我在攸你資訊當共同創辦人，負責一個叫 UniLife 的 APP，
+從功能設計到使用者旅程都是我做的，帶五個人的團隊，
+產品拿過 Appworks 加速器的投資，也入選教育部的 U-start。
+2024 年五月我回攸你資訊，職稱變成 AI 提示工程師——
+這是我第一次專職做 AI，用 Custom GPTs 幫同事做內部工具。
+2024 年十月到台北數位廣告當產品企劃專員，
+主要做前沿 AI 工具的調研跟內部培訓，測評過十幾款工具。
+今年四月十號到職程曦，到今天大概四個多月。
+各位可以看到這條線的方向：做產品、做 AI 工具、做 AI 培訓，
+到現在對外做課程、對內做系統，兩件事同時做。
+我現在的工作不是轉行，是這條線的延續。
+下面這句是我當初應徵程曦時寫在履歷上的：
+我想成為連結業務需求與工程開發的 AI 實踐者，
+為下一個十年的「辦公室 AI 化」做準備。
+這也是我這四個多月一直在做的事。`,
   // P5 個人特質
   `這是我給自己的五個特質。
 我沒有用比例圖，因為我覺得給個性打百分比沒什麼意義，
 所以每一個特質我都直接配一件我真的做過的事。
 解決力：看到問題我的反應不是回報給主管就結束，是直接把工具做出來。
 自學力：那些系統用到的東西有很多我原本不會，我是靠 AI 工具邊做邊學做完的。
+到目前為止我摸過的生成式 AI 工具超過十款，現在還在自學 n8n 跟 Claude Skills。
 換位思考：等一下講的 PRD 機器人，核心就是先搞懂對方要什麼。
-系統思維跟交付到底，後面的成果會自己說明，這裡先不展開。`,
+系統思維跟交付到底，後面的成果會自己說明，這裡先不展開。
+
+（如果被問到「這些是不是第一次做」，可以補：
+在攸你資訊我就在訪談每位同事的工作流程、畫流程圖，
+然後為他們客製指令集——PRD 機器人其實是把這件事自動化。
+在台北數位我導入過 Notion 建自動化工作流，
+把跨部門溝通耗時降了 35%，那跟神秘客系統是同一種思路。）`,
   // P6 公司精神
   `公司精神是「愛、新、勤、誠」，
 合起來就是那句話：勤勞地用創新的方式，誠懇地愛人。
@@ -1346,7 +1397,11 @@ const NOTES = [
 下一頁之後講的內容，都是在這個前提下。
 我覺得這個組合對新人來說滿好的——
 寫教材讓我必須把一個主題徹底搞懂才寫得出來，
-上台試教則讓我馬上知道學員會在哪裡卡住。這兩件事是互相回饋的。`,
+上台試教則讓我馬上知道學員會在哪裡卡住。這兩件事是互相回饋的。
+另外補充一下，這不是我第一次做 AI 培訓。
+我在台北數位廣告的時候就在策劃 AI 工具選用的內部課程，
+做過主流 AGI 工具的對比分析，也教過 Lovable 這類 prompt-driven 的開發工具。
+所以四門課的教材我不是從零摸索，是把做過的方法帶過來用。`,
   // P12 教材①
   `第一門是「AI 時代的商業企劃思維與簡報製作工具」。
 這門課的重點其實不在工具操作，而在思維——
@@ -1480,7 +1535,14 @@ vibe-coding 這門課教的方法，就是我後來開發神秘客系統跟 PRD 
 因為我發現使用者常常不是不願意寫，是不知道該寫什麼。
 面對一份空白文件很痛苦，但回答問題容易多了。
 這個設計其實也回到我前面講的換位思考——
-我沒有假設使用者應該要會寫規格，而是設計成他不會也沒關係。`,
+我沒有假設使用者應該要會寫規格，而是設計成他不會也沒關係。
+補充一件事：這個「反問」的做法不是我憑空想的。
+我在攸你資訊當 AI 提示工程師的時候，
+工作就是一個一個去訪談同事的工作流程、畫成流程圖，
+再為每個人客製他專用的指令集。
+那時候是我用人力在做這件事，一次只能服務一個人。
+PRD 機器人等於是把當年那套訪談流程自動化，
+讓它可以同時服務很多人，而且不需要我在場。`,
   // P28 PRD 現況
   `目前的狀態我也要說清楚：
 它已經開發完成，但還在持續更新版本，
@@ -1540,7 +1602,10 @@ vibe-coding 這門課教的方法，就是我後來開發神秘客系統跟 PRD 
 從題目發想、需求訪談，一路到上線跟維運，
 並且把那套方法真的用在第三、第四個專案上，驗證它站得住。
 長期三到五年，目標是成為能同時掌握對外課程產品跟對內系統落地的產品負責人，
-讓 AI 導入在公司裡變成一件標準的事，而不是每次都從零開始的個案。`,
+讓 AI 導入在公司裡變成一件標準的事，而不是每次都從零開始的個案。
+這個長期目標其實跟我當初應徵時寫的一樣——
+我說我想為下一個十年的「辦公室 AI 化」做準備。
+四個多月下來我更確定這件事值得做，而且程曦是可以做這件事的地方。`,
   // P34 建議
   `最後是給公司的三個建議，主題是新人入職跟知識傳承。
 第一個，新人報告的目標建議由主管跟新人一起確認。
@@ -1551,6 +1616,10 @@ vibe-coding 這門課教的方法，就是我後來開發神秘客系統跟 PRD 
 第二個，建議各部門列一份自己每月重複作業的清單。
 神秘客這套流程本來不在任何待辦清單上，老實說是碰巧發現的。
 如果有這樣一份清單，我們部門就可以有系統地評估哪些該先做，而不是等人來說。
+這個做法我在前公司實際跑過——
+我在台北數位廣告導入 Notion 的時候，就是先盤點各部門重複的作業，
+再依需求建自動化工作流，最後把跨部門溝通耗時降了大約 35%。
+所以這不是我隨口提的想法，是驗證過會有效的做法。
 第三個，內部工具做完之後要有交接跟維護機制。
 我自己做完這兩套系統之後最擔心的就是這件事——
 系統上線只是開始，如果沒有指定的維護窗口跟使用說明，
