@@ -1,12 +1,26 @@
 #!/usr/bin/env node
 /**
- * 產出「黃家朗新人報告.pptx」
+ * ⛔ 停用中 —— 請勿執行這支腳本 ⛔
  *
- * 內容來源：report/outline.md（改內容請改那份，然後重跑這支腳本）
- * 配色沿用參考範本 江宜恩新人報告.pdf：深藍 / 薰衣草紫 / 奶油黃 / 橘紅重點
+ * 2026.08 起，唯一的內容來源是「黃家朗新人報告.pptx」本身，
+ * 報告人已在 PowerPoint 手動修改（改寫公司精神實踐、重排三階段工作主軸、
+ * 填入課程數據、放入教材截圖、刪除 4 頁，並把頁碼改為自動編號）。
  *
- *   node report/build_pptx.js
+ * 這支腳本產出的是 35 頁的舊版；重跑它會直接覆蓋掉那些手工成果。
+ * 保留在 repo 裡只是為了保存產生邏輯與配色定義，作為歷史紀錄。
+ *
+ * 要修改簡報，請直接編輯 pptx。
+ *
+ * 配色（供日後參考）：深藍 2B2D5C / 薰衣草紫 D6D9F0 / 奶油黃 F7F1CE / 橘紅 D95F2B
  */
+
+if (require.main === module && !process.env.ALLOW_STALE_BUILD) {
+  console.error(
+    "⛔ 這支腳本已停用。現行版本是手動維護的 pptx，執行本腳本會覆蓋掉手工修改。\n" +
+    "   確定要重建舊版時才設定 ALLOW_STALE_BUILD=1。"
+  );
+  process.exit(1);
+}
 
 const fs = require("fs");
 const path = require("path");
